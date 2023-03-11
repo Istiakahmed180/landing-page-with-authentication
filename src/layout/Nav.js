@@ -1,13 +1,25 @@
 import { signOut } from "firebase/auth";
-import React from "react";
+import React, { useContext } from "react";
+import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { auth } from "../configs/firebase.config";
+import { AuthContext } from "../Contexts/AuthProvider";
 import useNav from "../hooks/useNav";
 
 const Nav = () => {
-  const user = null;
+  const { user, signOutUser } = useContext(AuthContext);
 
   const { navbar, navbarLogo } = useNav();
+
+  const handleSignOut = () => {
+    signOutUser()
+      .then(() => {
+        toast.success("User Logout Successfull");
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  };
 
   return (
     <nav
@@ -58,7 +70,7 @@ const Nav = () => {
             </li>
             <li>
               {user ? (
-                <button onClick={() => signOut(auth)}>Logout</button>
+                <button onClick={handleSignOut}>Logout</button>
               ) : (
                 <Link
                   to="/login"
